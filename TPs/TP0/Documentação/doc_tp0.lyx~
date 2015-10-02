@@ -1,0 +1,469 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language brazilian
+\language_package none
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 3cm
+\rightmargin 2.5cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Trabalho Prático 0: Anagramas
+\end_layout
+
+\begin_layout Author
+Manoel da Rocha Miranda Júnior
+\end_layout
+
+\begin_layout Section
+Introdução
+\end_layout
+
+\begin_layout Standard
+Este trabalho prático tem como objetivo agrupar conjuntos de palavras com
+ base em anagramas e retornar em ordem decrescente a quantidade de palavras
+ anagramas existente em cada grupo.
+ Segundo a definição da wikipédia
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+Acesso em 19/09/2015
+\end_layout
+
+\end_inset
+
+, um anagrama consiste em 
+\begin_inset Quotes eld
+\end_inset
+
+
+\shape italic
+uma espécie de jogo de palavras, resultando do rearranjo das letras de uma
+ palavra ou frase para produzir outras palavras, utilizando todas as letras
+ originais exatamente uma vez
+\shape default
+
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Por exemplo, partindo da palavra 
+\begin_inset Quotes eld
+\end_inset
+
+ATO
+\begin_inset Quotes erd
+\end_inset
+
+, é possível formar os anagramas TAO, TOA, AOT, OTA, OAT.
+ 
+\end_layout
+
+\begin_layout Standard
+A solução deste problema passa pela utilização de uma lista encadeada de
+ anagramas existentes no texto que são determinados a partir da ordenação
+ das letras de cada palavra em ordem alfabética.
+\end_layout
+
+\begin_layout Section
+Solução
+\end_layout
+
+\begin_layout Standard
+A entrada do problema consiste em N listas (1
+\begin_inset Formula $\leq$
+\end_inset
+
+N
+\begin_inset Formula $\leq$
+\end_inset
+
+10) de até 10⁶ palavras com no máximo 50 caracteres.
+ Em razão do possível consumo de memória no pior caso, uma lista encadeada
+ foi utilizada como estrutura de dados para armazenar as palavras, permitindo
+ que se use posições não contíguas na memória primária.
+ 
+\end_layout
+
+\begin_layout Standard
+Ao ler cada palavra da entrada, os caracteres que a compõem são ordenados
+ alfabeticamente objetivando a identificação do anagrama formado por ela.
+ Por exemplo, as palavras AOL e OLA são interpretadas como sendo o 'anagrama'
+ ALO.
+ Cada nó da lista encadeada representa um anagrama e é composto por uma
+ string que armazena o anagrama em si, um contador que é incrementado a
+ cada vez que o anagrama em questão é econtrado e também pelos apontadores
+ para as células adjacentes.
+ Foi utilizado também uma estrutura denominada Set que armazena um ponteiro
+ para o último nó da lista, bem como seu tamanho.
+\end_layout
+
+\begin_layout Standard
+O diagrama abaixo ilustra a estrutura de dados utilizada na modelagem do
+ problema:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/manoel/Documents/AEDS-III/draft/tad.jpg
+	scale 35
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Diagrama do tipo abstrato de dados utilizado
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+O algoritmo usado na ordenação dos caracteres de cada palavra foi o quicksort
+ por meio do método 
+\shape italic
+qsort
+\shape default
+, presente na biblioteca padrão da linguagem C.
+ Este método foi escolhido em função de sua complexidade assintótica em
+ caso médio de 
+\family sans
+
+\begin_inset Formula $O(n*logn)$
+\end_inset
+
+
+\family default
+.
+ A cada palavra lida da entrada é executado um procedimento de busca na
+ lista pelo seu anagrama.
+ Em caso de uma busca com sucesso, ou seja, caso uma palavra anagrama à
+ nova palavra já tenha sido inserida, é executado apenas um incremento do
+ contador presente na estrutura que a representa.
+ Caso a palavra represente um anagrama não existente na lista, é inserido
+ um nó ao final desta.
+ 
+\end_layout
+
+\begin_layout Standard
+Ao final de cada lista presente na entrada, depois de lida todas as palavras
+ e após todos os anagramas serem devidamente identificados e contados, é
+ feita uma iteração sobre toda a lista e os contadores de cada anagrama
+ são inseridos em um arranjo de inteiros.
+ Esse aranjo é em seguida ordenado de forma decrescente usando novamente
+ a função qsort.
+ A saída do programa consiste nos elementos deste arranjo após sua ordenação.
+ 
+\end_layout
+
+\begin_layout Standard
+Os procedimentos acima descritos são realizados para cada lista e os dados
+ são gravados na saída padrão.
+\end_layout
+
+\begin_layout Section
+Análise de custo
+\end_layout
+
+\begin_layout Subsection
+Análise Teórica do Custo Assintótico de Tempo
+\end_layout
+
+\begin_layout Standard
+O processo de leitura da entrada consiste primeiramente na ordenação dos
+ caracteres da palavra em O(c log c), com o uso do algorítmo Quick Sort,
+ onde c representa a quantidade de caracteres existentes na palavra.
+ Depois de ordenada, é feita uma busca sequencial pelo anagrama da palavra
+ a ser inserida cujo custo no pior caso pode ser O(n), o que ocorre quando
+ a célula correspondente ao anagrama se encontra no final da lista ou se
+ a busca não tiver sucesso e o anagrama ainda deve ser inserido.
+ Neste caso, n representa o tamanho do conjunto de palavras da lista.
+\end_layout
+
+\begin_layout Standard
+Depois do processo de leitura, a lista de anagramas é percorrida novamente
+ em busca dos contadores de cada grupo, sendo o custo desta operação O(n).
+ A cada iteração, o contador de cada grupo é lido e armazenado no arranjo
+ de contadores para futura ordenação.
+\end_layout
+
+\begin_layout Standard
+O processo de ordenação dos contadores é realizado por meio do algorítmo
+ Quick Sort, cujo custo assintótico no caso médio é O(n log n).
+ 
+\end_layout
+
+\begin_layout Standard
+Logo, a complexidade de tempo da solução apresentada é influenciada pelos
+ seguintes fatores:
+\end_layout
+
+\begin_layout Itemize
+Tamanho médio das palavras na lista, que implica no custo de ordenação dos
+ caracteres que a compõem
+\end_layout
+
+\begin_layout Itemize
+Tamanho das listas de palavras existentes na entrada bem como a quantidade
+ de anagramas em cada lista.
+ A quantidade de anagramas de cada lista é relevante devido ao custo de
+ iteração do set e posteriormente da ordenação dos contadores.
+ No pior caso, a quantidade de anagramas é igual a quantidade de palavras.
+\end_layout
+
+\begin_layout Standard
+O custo assintótico no algorítmo como um todo é de:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+O(n)*\left[O(p)*(O(p)+O(c*logc))+O(p)+O(p*logp)+O(p)+O(p)\right]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=O(n)*[O(p\text{²})+O(p*c*logc)+O(p*logp)+O(p)]
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+=O(n*p\text{²})+O(n*p*logc)+O(n*p*logp)+O(n*p)=O(n*p\text{²})=O(p\text{²)}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+onde:
+\end_layout
+
+\begin_layout Itemize
+n é igual à quantidade de listas na entrada a serem processadas; 
+\end_layout
+
+\begin_layout Itemize
+p representa a quantidade de palavras em uma lista;
+\end_layout
+
+\begin_layout Itemize
+c é a quantidade de caracteres de uma palavra.
+\end_layout
+
+\begin_layout Standard
+Desta forma, podemos concluir que o custo assintótico do algorítmo apresentado
+ é O(p²), sendo a quantidade de palavras presentes na lista da entrada.
+ Este comportamento poderá ser verificado na seção 4 desta documentação.
+\end_layout
+
+\begin_layout Subsection
+Análise Teórica do Custo Assintótico de Espaço
+\end_layout
+
+\begin_layout Standard
+A análise de custo de espaço pode ser feita levando em consideração a estrutura
+ de dados utilizada.
+ Cada célula da lista encadeada é composta por:
+\end_layout
+
+\begin_layout Itemize
+uma string de, no máximo, 51 caracteres (considerando o caracter terminador
+ de string), totalizando 204 bytes;
+\end_layout
+
+\begin_layout Itemize
+um inteiro de 4 bytes;
+\end_layout
+
+\begin_layout Itemize
+apontadores para os nós adjacentes, totalizando 16 bytes.
+\end_layout
+
+\begin_layout Standard
+Dessa forma, podemos chegar à uma complexidade de espaço final de O(224
+ * n) = O(n), sendo n a quantidade de palavras em uma dada lista na entrada.
+ Portanto, conclui-se que o consumo de memória cresce linearmente com o
+ tamanho da entrada.
+\end_layout
+
+\begin_layout Section
+Análise experimental
+\end_layout
+
+\begin_layout Standard
+Para a análise expermental desta solução foi implementado um gerador de
+ entradas que leva em consideração o tamanho das palavras que compẽm as
+ listas, e o tamanho da lista em si.
+\end_layout
+
+\begin_layout Standard
+O tempo gasto pelo algorítmo foi medido pelo comando time do Linux.
+ Esta ferramenta retorna o tempo gasto na execução de um comando.
+ O experimento foi feito em uma máquina com processador Intel Core i3 2.3
+ GHz e 4 GB de memória RAM.
+\end_layout
+
+\begin_layout Standard
+Para verificar a complexidade assintótica de tempo, variou-se o tamanho
+ das listas presentes na entrada.
+ A quantidade de listas se manteve em 10 e o tamanho das palavras em 40
+ caracteres.
+ O tamanho da lista foi variado de 2000 até 28000, incrementando de 2000
+ em 2000 a cada amostragem.
+ Os resultados foram plotados no gráfico disposto a seguir:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/manoel/Documents/AEDS-III/draft/final_chart.jpg
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Análise experimental variando o tamanho das palavras entre 2000 e 28000
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Conforme podemos aferir pelo formato da curva, a complexidade se mosta,
+ de fato, O(p²), ou seja, o tempo de execução cresce quadraticamente em
+ relação ao tamanho da entrada, conforme aferido na seção 3.1.
+\end_layout
+
+\begin_layout Section
+Conclusão
+\end_layout
+
+\begin_layout Standard
+A partir deste trabalho prático foi possível solucionar o problema de agrupament
+o de palavras anagramas bem como a ordenação dos grupos formados para cada
+ lista de palavras presente na entrada.
+ Por meio do TAD lista usando apontadores foi possível modelar os dados
+ da entrada e realizar a computação desses dados.
+ O algorítmo de ordenação e a estrutura de dados utilizados na solução do
+ problema tem um grande impacto na complexidade assintótica do problema,
+ que pode ser verificada e comprovada através de experimentos realizados
+ com entradas de tamanho adequado para este tipo de análise.
+\end_layout
+
+\end_body
+\end_document

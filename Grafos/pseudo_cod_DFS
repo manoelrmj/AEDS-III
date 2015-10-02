@@ -1,0 +1,20 @@
+void visitaDFS(vertice u, cor){
+	cor[u] = cinza;
+	if(u tem adj){
+		foreach(v adj a u){
+			if(cor[v] == branco)
+				visitaDFS(v);
+			else if(cor[v] == cinza)
+				// tem loop, pode parar por aqui
+		}
+		cor[u] = preto;
+	}
+}
+
+main(){
+    T = 0;
+    foreach(vetice X){
+        if(cor[x] == branco)
+            visitaDFS(x);    
+    }        
+}

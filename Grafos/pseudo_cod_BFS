@@ -1,0 +1,35 @@
+void visitaBFS(u){
+	cor[u] = cinza;
+	dist[u] = 0;
+	FFVazia(Fila); // Cria uma fila vazia
+	Enfileira(u);
+	while(!FilaVazia(Fila)){
+		Desenfileira(u);
+		if(temVerticeAdj(u)){
+			Aux = primeiroListaAdj(u);
+			FimListaAdj = false;
+			while(FimListaAdj == false){
+				v = proxAdj(u);
+				if(cor[v] == branco){
+					cor[v] = cinza;
+					dist[v] = dist[u] + 1;
+					antecessor[v] = u;
+					Enfileira(v);
+				}
+			}			
+		}
+		cor[u] = preto;
+	}
+}
+
+main(){
+	for(x=0; x<numVertices; x++){
+		cor[x] = branco;
+		dist[x] = infinito;
+		antecessor[x] = -1
+	}
+	for(x=0; x<numVertices; x++){
+		if(cor[x] == branco)
+			visitaBFS(x);
+	}
+}
