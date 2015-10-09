@@ -1,5 +1,18 @@
 #include "linkedlist.h"
 
+/* Este método calcula a probabilidade de se passar por um incêndio em um dado
+ * caminho. A entrada consiste de uma lista de arestas que representa o caminho
+ * a ser percorrido. 
+ */
+float probability(Set *s){
+	iterator it;
+	float pn = 1;
+	for(it=begin(s); it != end(s); it=next(it)){
+		pn *= (1-it->probability);
+	}
+	return 1 - pn;
+}
+
 int main(){
 	int N; // Número de instâncias do problema
 	int Q; // Número de quarteirões
@@ -45,8 +58,16 @@ int main(){
 			fireStation[d] = 1;
 		}
 
+		// Teste de probabilidade
+		Set path;
+		makeSet(&path);
+		insert(3, 0.2, &path);
+		insert(4, 0.2, &path);
+		//insert(1, 0.4, &path);
+		printf("PN: %f\n", probability(&path));
+
 		// -- TESTE
-		int k;
+		/*int k;
 		iterator it;
 		printf("Instância %d", i+1);
 		for(k=0; k<Q; k++){
@@ -57,7 +78,7 @@ int main(){
 				printf("\n");
 			for(it=begin(&listaAdj[k]); it != end(&listaAdj[k]); it = next(it))
 				printf(" - dest: %d | peso: %f\n", it->destination, it->probability);			
-		}		
+		}*/		
 		// -- TESTE
 	}
 	// Libera memória alocada dinamicamente
