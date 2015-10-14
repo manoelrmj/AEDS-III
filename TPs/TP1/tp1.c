@@ -1,4 +1,5 @@
 #include "linkedlist.h"
+#include "queue.h"
 
 /* Este método calcula a probabilidade de se passar por um incêndio em um dado
  * caminho. A entrada consiste de uma lista de arestas que representa o caminho
@@ -11,6 +12,24 @@ float probability(Set *s){
 		pn *= (1-it->probability);
 	}
 	return 1 - pn;
+}
+
+// Busca em largura
+void BFS(int *visited, int *reachable, Set *s, int source, queue *q, int k){
+	iterator it; // Iterador para percorrer os adjacentes do nó
+	push(source, 0, q); // Insere o primeiro elemento com disância zero
+	visited[source] = 1;
+	reachable[source] = 1;
+	while(!emptyQueue(q) && front(q)->distance < k){		
+		for(it=begin(&s[front(q)->key]); it != end(&s[front(q)->key]); it=next(it)){
+			if(!visited[it->destination]){
+				push(it->destination, front(q)->distance+1, q);
+				visited[it->destination] = 1;
+				reachable[it->destination] = 1;	
+			}			
+		}
+		pop(q); 
+	}
 }
 
 int main(){
@@ -51,6 +70,7 @@ int main(){
 		for(j=0; j<R; j++){ // Leitura das ruas
 			scanf("%d %d %f", &u, &v, &p);
 			insert(v, p, &listaAdj[u]);
+			insert(u, p, &listaAdj[v]);
 		}
 
 		for(j=0; j<D; j++){ // Leitura dos quarteirões c/ corpo de bombeiros
@@ -58,28 +78,26 @@ int main(){
 			fireStation[d] = 1;
 		}
 
-		// Teste de probabilidade
-		Set path;
-		makeSet(&path);
-		insert(3, 0.2, &path);
-		insert(4, 0.2, &path);
-		//insert(1, 0.4, &path);
-		printf("PN: %f\n", probability(&path));
+		int *visited = malloc(Q*sizeof(int));
+		int *reachable = malloc(Q*sizeof(int));
+		queue q;
+		makeQueue(&q);
+		for(j=0; j<Q; j++){
+			visited[i] = 0;
+			reachable[i] = 0;
+		}
+		for(j=0; j<Q; j++){
+			if(fireStation[j]){
+				BFS(visited, reachable, listaAdj, j, &q, K);
+				while(!emptyQueue(&q))
+					pop(&q);
+			}	
+		}
+		for(j=0; j<Q; j++){
+			printf("%d ", reachable[j]);
+		}
+		printf("\n");
 
-		// -- TESTE
-		/*int k;
-		iterator it;
-		printf("Instância %d", i+1);
-		for(k=0; k<Q; k++){
-			printf("\nLista de adjacência do nó %d ", k);
-			if(fireStation[k])
-				printf("(corpo de bombeiro presente)\n");
-			else
-				printf("\n");
-			for(it=begin(&listaAdj[k]); it != end(&listaAdj[k]); it = next(it))
-				printf(" - dest: %d | peso: %f\n", it->destination, it->probability);			
-		}*/		
-		// -- TESTE
 	}
 	// Libera memória alocada dinamicamente
 	for(j=0; j<Q; j++) 

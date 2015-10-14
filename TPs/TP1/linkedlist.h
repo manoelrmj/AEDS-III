@@ -22,10 +22,10 @@ typedef Street* iterator;
 void makeSet(Set *s);
 
 // Verifica se o conjunto está vazio - O(1)
-int empty(Set *s);
+int emptySet(Set *s);
 
 // Retorna o número de elementos presente na lista - O(1)
-int size(Set *s);
+int setSize(Set *s);
 
 // Retorna o primeiro elemento da lista em O(1).
 // Caso a lista esteja vaiza, retorna um ponteiro para end (sentinela da lista)
