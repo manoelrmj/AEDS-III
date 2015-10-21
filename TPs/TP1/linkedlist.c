@@ -1,4 +1,3 @@
-#include "grafo.h"
 #include "linkedlist.h"
 
 void makeSet(Set *s){
@@ -45,7 +44,7 @@ iterator find(int k, Set *s){
 	return end(s); // Busca sem sucesso
 }
 
-void insert(int destination, float probability, Set *s){ // Insere uma rua na lista de adjacência
+void insert(int destination, double probability, Set *s){ // Insere uma rua na lista de adjacência
 	iterator i = find(destination, s);
 	if(i == end(s)){ // Se a rua não existir na lista, inseri-la
 		Street *st = malloc(sizeof(Street));

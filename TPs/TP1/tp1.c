@@ -1,13 +1,17 @@
 #include "linkedlist.h"
 #include "queue.h"
+#include "heap.h"
+#include <limits.h>
+// Valor não possível para probabilidade
+#define INFINITY -1  
 
 /* Este método calcula a probabilidade de se passar por um incêndio em um dado
  * caminho. A entrada consiste de uma lista de arestas que representa o caminho
  * a ser percorrido. 
  */
-float probability(Set *s){
+double probability(Set *s){
 	iterator it;
-	float pn = 1;
+	double pn = 1;
 	for(it=begin(s); it != end(s); it=next(it)){
 		pn *= (1-it->probability);
 	}
@@ -16,8 +20,10 @@ float probability(Set *s){
 
 // Busca em largura
 void BFS(int *visited, int *reachable, Set *s, int source, queue *q, int k){
-	iterator it; // Iterador para percorrer os adjacentes do nó
-	push(source, 0, q); // Insere o primeiro elemento com disância zero
+	// Iterador para percorrer os adjacentes do nó
+	iterator it; 
+	// Insere o primeiro elemento com disância zero
+	push(source, 0, q); 
 	visited[source] = 1;
 	reachable[source] = 1;
 	while(!emptyQueue(q) && front(q)->distance < k){		
@@ -30,6 +36,74 @@ void BFS(int *visited, int *reachable, Set *s, int source, queue *q, int k){
 		}
 		pop(q); 
 	}
+}
+
+// Dijkstra (caminho mínimo)
+void Dijkstra(Set *listaAdj, int numVertices, int numArestas, int origem, int destino, int *alcancavel){
+	// Arrays de limite de peso e Antecessores
+	double *p = malloc(numVertices*sizeof(double));
+	int *Antecessor = malloc(numVertices*sizeof(int));
+	int *visitado = malloc(numVertices*sizeof(int));
+	int *heapPos = malloc(numVertices*sizeof(int));
+	// Estrutura heap que implementa lista de prioridades
+	Heap h;
+	inicializaHeap(&h, numVertices);
+	int u, i;
+	iterator it;
+	Item auxNode; // auxiliar para inserção no heap
+	for(u=0; u<numVertices; u++){
+		Antecessor[u] = -1;
+		p[u] = INFINITY;
+		heapPos[u] = -1;		
+	}
+	/****TESTE****/
+	/*printf("----------\nANT: ");
+	for(i=0; i<numVertices; i++)
+		printf("%d ", Antecessor[i]);
+	printf("\n");
+	printf("PRB: ");
+	for(i=0; i<numVertices; i++)
+		printf("%.2lf ", p[i]);
+	printf("\n----------\n");*/
+	/****TESTE****/
+	int j;
+	p[origem] = 1; // Probabilidade de incêndio na origem é nula
+	i = origem;
+	while(h.size >= 1){ // Enquanto o heap não estiver vazio
+		visitado[i]	= 1;
+		for(it=begin(&listaAdj[i]); it!=end(&listaAdj[i]); it=next(it)){
+			printf("%d , ALC: %d, VIS: %d\n", it->destination, alcancavel[it->destination], visitado[it->destination]);
+			if(heapPos[it->destination] == -1 && !visitado[it->destination] && alcancavel[it->destination]){
+				auxNode.node = it->destination;
+				auxNode.prob = it->probability;
+				//printf("Inseri: %d\n", auxNode.node);
+				insereItem(&h, auxNode, heapPos);
+				p[it->destination] = p[i] * (1 - it->probability);
+				Antecessor[it->destination] = i;
+			}else if(h.v[heapPos[it->destination]].prob > p[i] * (1 - it->probability)
+				&& !visitado[it->destination] && alcancavel[it->destination]){
+				// Relaxamento
+				//printf("Relaxei %d com %d(%.2lf[%d], %.2lf)\n", it->destination, i, h.v[heapPos[it->destination]].prob, Antecessor[h.v[heapPos[it->destination]].node], p[i] * (1 - it->probability));
+				h.v[heapPos[it->destination]].prob = p[i] * (1 - it->probability);
+				Antecessor[it->destination] = i;
+				constroiHeap(&h, heapPos); // Usar Refaz
+			}
+		}
+		/*for( j = 1; j <= h.size; j++){
+			printf("(%d, %.2lf) ", h.v[j].node, h.v[j].prob);
+		}
+		printf("\n");*/
+		auxNode = topo(&h);
+		i = auxNode.node;
+		//printf("Retirei: %d\n", auxNode.node);
+		retiraHeap(&h, heapPos);
+	}
+	/****** TESTE *******/
+	printf("\n\nProb destino: %.2lf", 1-p[destino]);	
+	printf("\nAnt[]: ");
+	for(j=0; j<numVertices; j++)
+		printf("%d ", Antecessor[j]);
+	printf("\n");
 }
 
 int main(){
@@ -78,14 +152,20 @@ int main(){
 			fireStation[d] = 1;
 		}
 
-		int *visited = malloc(Q*sizeof(int));
+		/**** Fim de leitura da instância ****/
+
 		int *reachable = malloc(Q*sizeof(int));
+		int *visited = malloc(Q*sizeof(int));
 		queue q;
+		// Inicializa a fila
 		makeQueue(&q);
 		for(j=0; j<Q; j++){
-			visited[i] = 0;
 			reachable[i] = 0;
+			visited[i] = 0;
 		}
+		/* Para cada corpo de bombeiro, determinar os vértices alcançáveis a
+		 * partir de uma busca em largura.
+		 */ 
 		for(j=0; j<Q; j++){
 			if(fireStation[j]){
 				BFS(visited, reachable, listaAdj, j, &q, K);
@@ -93,11 +173,9 @@ int main(){
 					pop(&q);
 			}	
 		}
-		for(j=0; j<Q; j++){
-			printf("%d ", reachable[j]);
-		}
-		printf("\n");
 
+		// Operações para o algorítmo de Dijkstra
+		Dijkstra(listaAdj, Q, R, S, C, reachable);		
 	}
 	// Libera memória alocada dinamicamente
 	for(j=0; j<Q; j++) 

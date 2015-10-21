@@ -5,7 +5,7 @@
 // Cada célula da lista representa uma rua
 typedef struct street{
 	int destination;
-	float probability;
+	double probability;
 	struct street *prev;
 	struct street *next;
 } Street;
@@ -47,7 +47,7 @@ int key(iterator x);
 iterator find(int k, Set *s);
 
 // Insere uma rua no conjunto em O(1)
-void insert(int destination, float probability, Set *s);
+void insert(int destination, double probability, Set *s);
 
 // Remove k do conjunto (caso exista) em O(n)
 void erase(int k, Set *s);

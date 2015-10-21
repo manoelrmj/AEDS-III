@@ -5,7 +5,7 @@
 // Estruturas e métodos para a lista encadeada
 
 typedef struct word{
-	char word[30];
+	char word[31];
 	int count;
 	struct word *prev;
 	struct word *next;
@@ -170,6 +170,11 @@ int main(){
 		for(i=0; i<26; i++){
 			clear(&words[i]);		
 			clear(&shortened[i]);
-		}		
+		}
 	}
+	for(i=0; i<26; i++){
+		freeSet(&words[i]);
+		freeSet(&shortened[i]);
+	}
+	return 0;
 }
