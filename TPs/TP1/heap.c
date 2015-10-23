@@ -2,7 +2,7 @@
 
 void inicializaHeap(Heap *h, int n){
 	int i;
-	h->v = (Item*) malloc(n+1*sizeof(Item));
+	h->v = (Item*) malloc((n+1)*sizeof(Item));
 	for(i=0; i<n+1; i++)
 		h->v[i].prob = -1;
 	h->size = 1;
@@ -12,7 +12,7 @@ void insereItem(Heap *h, Item i, int *pos){
 	h->v[h->size] = i;
 	pos[i.node] = h->size;
 	h->size++;
-	RefazBaixoCima(h->v, h->size, pos); // ALTEREI AQUI
+	RefazBaixoCima(h->v, h->size-1, pos); // ALTEREI AQUI
 }
 
 void Troca(Item *A, Item *B, int *pos){
@@ -38,7 +38,7 @@ void RefazCimaBaixo(Item A[], int k, int Dir, int *pos) {
  	while (2*k <= Dir) {
  		j = 2*k;
  		/* encontra maior filho */
- 		if (j < Dir && A[j].prob < A[j+1].prob)
+ 		if (j <= Dir && A[j].prob < A[j+1].prob)
  			j++;
  		/* testa se pai é maior que filho */
  		if (A[k].prob >= A[j].prob)
@@ -65,6 +65,7 @@ Item topo(Heap *h){
 
 void retiraHeap(Heap *h, int *pos){
 	h->v[1] = h->v[h->size - 1];
+	pos[h->v[h->size-1].node] = 1;
 	h->size--;
 	constroiHeap(h, pos);
 }
