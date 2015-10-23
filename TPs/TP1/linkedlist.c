@@ -44,16 +44,20 @@ iterator find(int k, Set *s){
 	return end(s); // Busca sem sucesso
 }
 
-void insert(int destination, double probability, Set *s){ // Insere uma rua na lista de adjacência
-	iterator i = find(destination, s);
-	if(i == end(s)){ // Se a rua não existir na lista, inseri-la
+// Insere uma rua na lista de adjacência (ordenadamente)
+void insert(int destination, double probability, Set *s){ 
+	iterator i = begin(s);
+	while(i != end(s) && key(i) < destination){
+		i = next(i);
+	}
+	if(i == end(s) || key(i) != destination){
 		Street *st = malloc(sizeof(Street));
 		st->destination = destination;
 		st->probability = probability;
-		st->prev = end(s)->prev;
-		st->prev->next = st;
-		st->next = end(s);
-		end(s)->prev = st;
+		st->prev = i->prev;
+		st->next = i;
+		i->prev->next = st;
+		i->prev = st;
 		s->size++;
 	}
 }

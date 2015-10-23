@@ -51,6 +51,7 @@ void Dijkstra(Set *listaAdj, int numVertices, int numArestas, int origem, int de
 		
 	int j;
 	p[origem] = 1; // Probabilidade de incêndio na origem é nula
+	visitado[origem] = 1;
 	i = origem;
 	while(h.size >= 1){ // Enquanto o heap não estiver vazio
 		visitado[i]	= 1;
@@ -63,26 +64,20 @@ void Dijkstra(Set *listaAdj, int numVertices, int numArestas, int origem, int de
 				insereItem(&h, auxNode, heapPos);
 				p[it->destination] = p[i] * (1 - it->probability);
 				Antecessor[it->destination] = i;
-			}else if(h.v[heapPos[it->destination]].prob < p[i] * (1 - it->probability)
+			}else if(p[it->destination] < p[i] * (1 - it->probability)
 				&& !visitado[it->destination] && alcancavel[it->destination]){
 				// Relaxamento
-				//printf("Relaxei %d com %d(%.2lf[%d], %.2lf)\n", it->destination, i, h.v[heapPos[it->destination]].prob, Antecessor[h.v[heapPos[it->destination]].node], p[i] * (1 - it->probability));
 				h.v[heapPos[it->destination]].prob = p[i] * (1 - it->probability);
 				p[it->destination] = p[i] * (1 - it->probability);
 				Antecessor[it->destination] = i;
-				constroiHeap(&h, heapPos); // Usar Refaz
-				//RefazBaixoCima(h.v, heapPos[it->destination], heapPos); 
+				constroiHeap(&h, heapPos);
 			}
 		}
 		auxNode = topo(&h);
 		i = auxNode.node;
-		/*printf("Heap: ");
-		for(u=1; u < h.size; u++)
-			printf("%d ", h.v[u].node);
-		printf("\n");
-		printf("Retirei: %d\n", auxNode.node);*/
 		retiraHeap(&h, heapPos);
 	}
+
 	u = 0;
 	if(p[destino] == INFINITY){
 		printf("%d\n", -1);
@@ -99,7 +94,7 @@ void Dijkstra(Set *listaAdj, int numVertices, int numArestas, int origem, int de
 		printf(" %d", destino);
 		printf("\n");
 	}
-
+	
 	// Liberação de memória alocada dinamicamente
 	free(p);
 	//printf("Liberou p\n");
@@ -141,7 +136,7 @@ int main(){
 		listaAdj = malloc(Q*sizeof(Set));
 		for(j=0; j<Q; j++)
 			makeSet(&listaAdj[j]);
-
+		
 		/* Cria um arranjo de Q posições para indicar quais quarteirões tem um 
 		 * corpo de bombeiros. Inicialmente, nenhum quarteirão o possui, até que
 		 * seja feita a leitura.
@@ -178,18 +173,14 @@ int main(){
 			}	
 		}
 		
-
-		/*for(j=0; j<Q; j++)
-			printf("%d ", reachable[j]);
-		printf("\n");*/
-
 		// Operações para o algorítmo de Dijkstra
 		Dijkstra(listaAdj, Q, R, S, C, reachable);
 		//printf("Saiu Dijkstra\n");
+		for(j=0; j<Q; j++) 
+			freeSet(&listaAdj[j]);
+
 	}
 	// Libera memória alocada dinamicamente
-	for(j=0; j<Q; j++) 
-		freeSet(&listaAdj[j]);
 	free(listaAdj);
 	free(fireStation);
 	free(reachable);

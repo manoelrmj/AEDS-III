@@ -12,7 +12,7 @@ void insereItem(Heap *h, Item i, int *pos){
 	h->v[h->size] = i;
 	pos[i.node] = h->size;
 	h->size++;
-	RefazBaixoCima(h->v, h->size-1, pos); // ALTEREI AQUI
+	RefazBaixoCima(h->v, h->size-1, pos);
 }
 
 void Troca(Item *A, Item *B, int *pos){
@@ -65,7 +65,7 @@ Item topo(Heap *h){
 
 void retiraHeap(Heap *h, int *pos){
 	h->v[1] = h->v[h->size - 1];
-	pos[h->v[h->size-1].node] = 1;
+	if (h->size > 1) pos[h->v[h->size-1].node] = 1;
 	h->size--;
 	constroiHeap(h, pos);
 }
