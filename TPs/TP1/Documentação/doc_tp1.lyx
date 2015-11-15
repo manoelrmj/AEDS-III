@@ -1,0 +1,523 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language brazilian
+\language_package none
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 3cm
+\rightmargin 2.5cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Trabalho Prático 1: This city is on fire!
+\end_layout
+
+\begin_layout Author
+Manoel da Rocha Miranda Júnior {manoelrmj@dcc.ufmg.br}
+\end_layout
+
+\begin_layout Section
+Introdução
+\end_layout
+
+\begin_layout Standard
+Este trabalho prático objetiva a solução de caminhamento em um conjunto
+ de quarteirões presentes em uma cidade com altos índices de incêndio.
+ Nessa cidade existem alguns quarteirões que possuem um corpo de bombeiros.
+ O bombeiro que faz esse caminho evita ao máximo ter que apagar um incêndio
+ e, portanto, nunca fica a mais de k quarteirões de algum corpo de bombeiro.
+ Este bombeiro possui um mapa da cidade onde estão descritos os quarteirões
+ e as ruas que os conectam.
+ Para cada trecho existe uma probabilidade P(u, v) de acontecer um incêndio
+ entre o quarteirão u e v.
+ Neste caso, as ruas são de mão dupla e a probabilidade de ocorrer um incêndio
+ entre u e v é a mesma de ocorrer entre u e v.
+ O objetivo é escolher o caminho com menor probabilidade de ocorrer um incêndio
+ respeitando a distância máxima de k quarteirões de algum corpo de bombeiro.
+ 
+\end_layout
+
+\begin_layout Standard
+Para a solução deste problema, os principais algorítmos utilizados foram
+ o Algorítmo de Dijkstra e de busca em largura, que permitem determinar
+ o menor caminho entre duas arestas e determinar quais vértices podem ser
+ visitados, respectivamente.
+ 
+\end_layout
+
+\begin_layout Section
+Solução
+\end_layout
+
+\begin_layout Standard
+O problema foi modelado sob a forma de um grafo ponderado.
+ Cada quarteirão é representado por um vértice e as ruas que os conectam
+ constituem as arestas do grafo.
+ 
+\end_layout
+
+\begin_layout Standard
+A entrada do problema é composta por um inteiro N que representa o número
+ de instâncias do problema a serem resolvidas.
+ Para cada instância do problema existe o número de quarteirões Q, o número
+ de ruas R, o ponto de saída S e chegada C, um número K que informa a distância
+ máxima que se pode estar de um corpo de bombeiro e um número D que informa
+ a quantidade de corpo de bombeiros existente na cidade.
+ Para cada rua é descrito o trecho entre dois quarteirões com dois inteiros
+ que representam os id's dos mesmos e um número real positivo que representa
+ a probabilidade de incêndio deste trecho.
+ Ao final de cada entrada existem D inteiros com os id's dos quarteirões
+ nos quais existe um corpo de bombeiro.
+\end_layout
+
+\begin_layout Standard
+Para a modelagem do problema, cada instância foi modelada em um grafo implementa
+do por meio de uma lista
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+As estruturas de dados 
+\shape italic
+lista encadeada
+\shape default
+, 
+\emph on
+heap
+\emph default
+ e 
+\emph on
+fila
+\emph default
+ foram implementadas tendo como base códigos utilizados no curso de AEDS
+ II.
+ Apenas algumas correções e adaptações foram feitas para adequar as estruturas
+ em questão para a solução deste problema.
+ O material de apoio utilizado na construção deste TP está acessível em
+ http://homepages.dcc.ufmg.br/~manoelrmj/tads/
+\end_layout
+
+\end_inset
+
+ de adjacência.
+ A lista é representada por um Set que consiste em um vetor de listas duplamente
+ encadeadas.
+ Cada posição do set (o índice do set identifica cada vértice) aponta para
+ o início de uma lista de arestas adjacentes.
+ Vale observar que os nós são inseridos na lista de forma a ficarem ordenados
+ com relação ao id do quarteirão, com o objetivo de garantir a ordem lexicográfi
+ca como segundo critério de prioridade.
+ As imagens abaixo esquematizam como um grafo que modela uma instância do
+ problema é representado na estrutura de dados.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/manoel/Downloads/Diagrama TAD TP1.png
+	scale 40
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Diagrama do tipo de dados utilizado na modelagem do problema
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Para cada instância do problema, é feita uma busca em largura objetivando
+ a marcação de quais vértices podem ser visitados com base na distância
+ de cada bombeiro.
+ Para cada bombeiro na entrada o procedimento de busca é executado tendo
+ como origem estes nós.
+ A busca em largura foi implementada tendo como base uma fila¹ de visitas.
+ Para cada vértice visitado, os nós adjacentes à este são inseridos no final
+ da fila para posterior visita.
+ A cada iteração os vetores de visitados e alcançáveis são atualizados e
+ este procedimento se repete até que a fila esteja vazia e a distância máxima
+ (K) seja alcançada.
+ 
+\end_layout
+
+\begin_layout Standard
+Após a busca em profundidade, cuja saída consiste em um arranjo de vértices
+ alcançáveis, é executado o algorítmo de Dijkstra.
+ Este algorítmo visa gerar um caminho mínimo no grafo bem como calcular
+ a menor probabilidade de passar por um incêndio no caminho percorrido.
+ Neste método, primeiramente verifica-se se o vértice destino é alcançável.
+ Caso seja, existe um caminho de custo mínimo (neste caso, consideramos
+ como custo a probabilidade de se passar por um incêndio).
+ Caso contário, não há um caminho possível, o que pode ocorrer um função
+ da distância máxima à um corpo de bombeiro ou em casos em que o vértice
+ de destino é isolado.
+ Se exisitir um caminho do vértice de origem ao vértice de destino, o algorítmo
+ procede.
+ Inicialmente, todos os vetores, salvo a origem, não possuem nenhum antecessor,
+ probabilidade igual a infinito e são marcados como não visitados.
+ 
+\end_layout
+
+\begin_layout Standard
+A eficiência da implementação do algorítmo de Dijkstra depende da forma
+ com a qual a melhor aresta para compor o menor caminho é selecionada.
+ Para este trabalho prático foi utilizado como estrutura de dados um max-heap¹.
+ Nesta estrutura, os nós pai são sempre maiores do que os nós filhos.
+ Desta forma, a probabilidade de incêndio em relação à origem de cada quarteirão
+ inserido no heap consiste na probabilidade de não ter um incêndio.
+ Dessa forma, com base na estrutura desta fila de prioridades, o vértice
+ que possui a maior probabilidade de não ter incêndio está sempre no topo
+ do heap e este é selecionado para compor o melhor caminho.
+ Desta forma, ao final do algorítmo, teremos o caminho com a menor probabilidade
+ de não ter um incêndio.
+\end_layout
+
+\begin_layout Standard
+O algorítmo de Dijkstra se utiliza de uma estratégia gulosa para determinar
+ o menor caminho, determinando a cada aresta lida o melhor caminho a ser
+ percorrido.
+ A técnica de relaxamento, garante que, caso seja encontrado até um vértice
+ v um caminho melhor do que o determinado anteriormente, o custo total e
+ os antecessores são atualizados de forma a encontrar a solução ótima no
+ final.
+\end_layout
+
+\begin_layout Standard
+No procedimento Dijkstra, existem os seguintes arranjos:
+\end_layout
+
+\begin_layout Itemize
+Probabilidades (int *p) : Guarda a probabilidade de não ocorrer um incêndio
+ entre entre a origem e o i-ésimo quarteirão.
+ 
+\end_layout
+
+\begin_layout Itemize
+Antecessores (int *Antecessor) : Guarda o nó que antecede o i-ésimo elemento
+ depois da execução do algorítmo.
+ Por meio deste arranjo é possível determinar o caminho a ser percorrido.
+\end_layout
+
+\begin_layout Itemize
+Visitados (int *visitado) : Guarda o status do elemento i no que diz respeito
+ à sua visitação (quando um nó é visitado, seus adjacentes são percorridos
+ de forma a determinar o melhor caminho até então -estratégia gulosa-) 
+\end_layout
+
+\begin_layout Itemize
+Posição no heap (int *heapPos): Vetor que informa a posição no arranjo do
+ heap.
+ Este vetor é necessário para determinar em que posição se encontra o vértice
+ v no heap.
+ No processo de relaxamento é necessário atualizar a nova probabilidade
+ na lista de prioridades.
+\end_layout
+
+\begin_layout Itemize
+Caminho (int *path): Este arranjo monta o caminho final lendo o vetor de
+ antecessores começando da posição de destino até chegar ao vértice de origem.
+ A saída do problema é determinada com base neste arranjo.
+\end_layout
+
+\begin_layout Standard
+Depois de ter os vetores devidademente inicializados, os nós adjacentes
+ aos vértices de cada nó visitado são inseridos no heap, caso este não exista
+ na estrutura do heap.
+ Se já for existente, é aplicada então a técnica de relaxamento atualizando
+ o vetor de probabilidades, a probabilidade do nó em questão no heap e o
+ vetor de antecessores.
+ O próximo nó que será visitado é retirado do topo da heap e o procedimento
+ descrito anteriormente é executado novamente até que que o heap esteja
+ vazio.
+ 
+\end_layout
+
+\begin_layout Standard
+Ao final do algorítmo, a probabilidade de 
+\emph on
+não
+\emph default
+ ter um incêndio estará no vetor de probabilidades e o melhor caminho pode
+ ser determinado a partir da leitura do vetor de antecessores.
+ A saída consiste na probabilidade de passar por um incêndio percorrendo
+ o caminho determinado (dada por 
+\begin_inset Formula $1-p[destino]$
+\end_inset
+
+) e no caminho em si, que é armazenado sequencialmente no arranjo path por
+ meio da leitura do arranjo antecessores.
+\end_layout
+
+\begin_layout Section
+Análise de custo
+\end_layout
+
+\begin_layout Subsection
+Análise Teórica do Custo Assintótico de Tempo
+\end_layout
+
+\begin_layout Standard
+A análise teórica do custo de tempo pode ser determinada em relação à cada
+ algorítmo executado sobre a entrada.
+ Para a solução deste trabalho prático, podemos fazer essa análise sob a
+ perspectiva de dois algorítmos:
+\end_layout
+
+\begin_layout Itemize
+BFS (Busca em largura) : Para cada bombeiro existente na entrada, é feita
+ uma busca em largura nos nós do grafo.
+ No pior caso, temos um valor de K que permita a visitação em todos os nós
+ do grafo.
+ Como estamos abordando nesta seção a análise de pior caso, teríamos na
+ entrada um grafo fortemente conexo, onde todos os vértices estão conectados
+ entre si.
+ Dessa forma, para cada vértice, seriam visitados 
+\begin_inset Formula $V-1$
+\end_inset
+
+ vértices e este procedimento seria executado para todos eles (
+\begin_inset Formula $V$
+\end_inset
+
+ vezes), chegando ao final à uma complexidade assintótica igual a 
+\begin_inset Formula $O(|V|\text{³})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Itemize
+Dijkstra (caminho mínimo) : Considerando o pior caso onde a busca pelo caminho
+ mínimo se da em um grafo fortemente conexo, podemos analisar da seguinte
+ forma: todos os nós, bem como os vértices adjacentes à este, são visitados
+ e inseridos no heap à um custo de 
+\begin_inset Formula $O(|V\text{|²})$
+\end_inset
+
+.
+ O custo de manter a lista de prioridades sob a condição de heap é igual
+ à 
+\begin_inset Formula $O(\log|V|)$
+\end_inset
+
+.
+ Tal condição é mantida na chamada dos métodos de operação do heap (
+\emph on
+RefazBaixoCima
+\emph default
+ e 
+\emph on
+RefazCimaBaixo
+\emph default
+).
+ Desta forma, para o algorítmo de Dijkstra, a complexidade final é dada
+ por 
+\begin_inset Formula $O(|V|\text{²}*\log V)=O(|V|\text{²})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Análise Teórica do Custo Assintótico de Espaço
+\end_layout
+
+\begin_layout Standard
+A análise de espaço feita sob o pior caso pode ser feita inicialmente sob
+ a modelagem do problema.
+ Considerando na entrada um grafo fortemente conectado, temos 
+\begin_inset Formula $V$
+\end_inset
+
+ listas de 
+\begin_inset Formula $V$
+\end_inset
+
+ vértices (considerando o sentinela da lista), sendo a complexidade de espaço
+ igual a 
+\begin_inset Formula $O(|V|*|V|)=O(|V|\text{²}).$
+\end_inset
+
+ Para a busca em largura, temos um arranjo de 
+\begin_inset Formula $V$
+\end_inset
+
+ posições, sendo a complexidade espacial igual a 
+\begin_inset Formula $O(|V|)$
+\end_inset
+
+ e no algorítmo de Dijkstra, o consumo de espaço do heap também é linear,
+ já que este também é baseado em um arranjo de V posições, ou seja 
+\begin_inset Formula $O(|V)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Desta forma, o consumo de memória no pior caso é dado por 
+\begin_inset Formula $O(|V|\text{²}+|V|+|V|)=O(|V|\text{²})$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Section
+Análise experimental
+\end_layout
+
+\begin_layout Standard
+Para a análise experimental desta solução foram utilizadas diferentes entradas
+ variando-se a quantidade de vértices.
+ Como a intenção é analisar o comportamento em pior caso, foram inseridos
+ bombeiros em todos os quarteirões para que todos eles pudessem ser visitados
+ e o tempo da busca em largura pudesse ser devidamente considerado.
+\end_layout
+
+\begin_layout Standard
+O tempo gasto pelo algorítmo foi medido pelo comando time do Linux.
+ Esta ferramenta retorna o tempo gasto na execução de um comando.
+ O experimento foi feito em uma máquina com processador Intel Core i3 2.3
+ GHz e 4 GB de memória RAM.
+ Os resultados estão dispostos no gráfico a seguir:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/manoel/Documents/AEDS-III/TPs/TP1/assets/graficotp1.png
+	scale 75
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Representação em grafo da entrada
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Conforme podemos aferir pelo formato do gráfico, a complexidade assintótica
+ de tempo se mostra, de fato, 
+\begin_inset Formula $O(|V|\text{³})$
+\end_inset
+
+, ou seja, o tempo de execução cresce cubicamente em relação ao tamanho
+ da entrada, conforme aferido na seção 3.1.
+\end_layout
+
+\begin_layout Section
+Conclusão
+\end_layout
+
+\begin_layout Standard
+A partir deste trabalho prático foi possível solucionar o problema de caminhamen
+to mínimo em um grafo.
+ Na abstração do problema, a limitação imposta pela distância à um corpo
+ de bombeiros permitiu a implementação de uma soluçao baseada em busca em
+ largura.
+ Para a correta e eficiente implementação dos algorítmos em questão, foram
+ utilizadas estruturas de dados conhecidas, como lista, fila e heap.
+ Na solução apresentada, o processo que se mostrou mais custoso computacionalmen
+te no pior caso foi a busca em largura.
+\end_layout
+
+\end_body
+\end_document

@@ -31,7 +31,7 @@ void Dijkstra(Set *listaAdj, int numVertices, int numArestas, int origem, int de
 		printf("-1\n");
 		return;
 	}
-	// Arrays de limite de peso e Antecessores
+	// Arrays de probabilidade, antecessores, visitados, posição do heap e caminho final
 	double *p = malloc(numVertices*sizeof(double));
 	int *Antecessor = malloc(numVertices*sizeof(int));
 	int *visitado = calloc(numVertices, sizeof(int));
@@ -58,9 +58,7 @@ void Dijkstra(Set *listaAdj, int numVertices, int numArestas, int origem, int de
 		for(it=begin(&listaAdj[i]); it!=end(&listaAdj[i]); it=next(it)){
 			if(heapPos[it->destination] == -1 && !visitado[it->destination] && alcancavel[it->destination]){
 				auxNode.node = it->destination;
-				//auxNode.prob = it->probability;
 				auxNode.prob = p[i] * (1-it->probability);
-				//printf("Inseri: %d com P = %lf\n", auxNode.node, auxNode.prob);
 				insereItem(&h, auxNode, heapPos);
 				p[it->destination] = p[i] * (1 - it->probability);
 				Antecessor[it->destination] = i;
@@ -97,17 +95,11 @@ void Dijkstra(Set *listaAdj, int numVertices, int numArestas, int origem, int de
 	
 	// Liberação de memória alocada dinamicamente
 	free(p);
-	//printf("Liberou p\n");
 	free(Antecessor);
-	//printf("Liberou Antecessor\n");
 	free(visitado);
-	//printf("Liberou visitado\n");
 	free(heapPos);
-	//printf("Liberou heapPos\n");
 	free(path);
-	//printf("Liberou path\n");
-	//free(h.v);
-	//printf("Liberou heap\n");
+	free(h.v);
 }
 
 int main(){
@@ -171,20 +163,19 @@ int main(){
 				while(!emptyQueue(&q))
 					pop(&q);
 			}	
-		}
-		
+		}	
+		freeQueue(&q);
 		// Operações para o algorítmo de Dijkstra
 		Dijkstra(listaAdj, Q, R, S, C, reachable);
-		//printf("Saiu Dijkstra\n");
 		for(j=0; j<Q; j++) 
 			freeSet(&listaAdj[j]);
-
+	
+		// Libera memória alocada dinamicamente
+		free(listaAdj);
+		free(fireStation);
+		free(reachable);
+		free(visited);
 	}
-	// Libera memória alocada dinamicamente
-	free(listaAdj);
-	free(fireStation);
-	free(reachable);
-	free(visited);
-
+	
 	return 0;	
 }
