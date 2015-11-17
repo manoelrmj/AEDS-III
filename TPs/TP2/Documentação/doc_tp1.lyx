@@ -186,7 +186,7 @@ removidos
  e cada distância lida é somada com a distância subsequente de forma a obter
  a distância que seria percorrida ao eliminar um planeta.
  Das distâncias calculadas é obtida a menor e o planeta correspondente é
- desconsiderado por meio de um deslocamento do vetor.
+ então desconsiderado por meio de um deslocamento do vetor.
  Ao final das N-K iterações, N-K planetas terão sidos desconsiderados e,
  no arranjo remanescente desta operação, estarão contidas as distâncias
  correspondentes à soma das arestas unificadas na remoção de cada planeta.
@@ -328,11 +328,238 @@ Na solução proposta, o algorítmo guloso nem sempre fornece a resposta correta
  Tomemos como exemplo o caso em que existem 9 planetas dos quais 2 serão
  conquistados sendo a distâncias 11 / 1 / 1 / 1 / 1 / 1 / 1 / 1 / 1 / 1
  / 11.
- Na solução gulosa proposta haverá seleção 
+ Na solução gulosa proposta haverá seleção dos planetas com menor peso de
+ distâncias.
+ Para essa instância, a escolha ótima a cada iteração do algorítmo de forma
+ a eliminar esses planetas não leva à solução ótima.
+ A imagem abaixo mostra como o arranjo de distâncias é alterado a cada iteração
+ do algorítmo:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/manoel/Documents/AEDS-III/TPs/TP2/assets/Screenshot from 2015-11-16 23:39:01.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Alteração do arranjo de distâncias a cada iteração do algorítmo guloso
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A saída do algorítmo neste caso seria 18.
+ Entretanto, na solução ótima, a maior distância percorrida seria 15.
+ Como o algorítmo guloso toma uma decisão que aparentemente leva à solução
+ ótima em um dado momento e não volta atrás na mesma, caso exista um planeta
+ cuja não visitação implicasse em uma sub-distância menor, esta possibilidade
+ não será considerada.
+ 
+\end_layout
+
+\begin_layout Standard
+// Discutir testes para o qual da certo.
 \end_layout
 
 \begin_layout Subsection
 Força Bruta
+\end_layout
+
+\begin_layout Standard
+A estratégia de solução do problema por força bruta consiste simplesmente
+ em gerar todas as possíveis combinações de K planetas no conjunto de N
+ unidades.
+ Para cada combinação gerada é verificada qual a maior distância percorrida
+ pela nave ao visitar os planetas em questão na combinação formada.
+ Este valor é registrado e então comparado e atualizado a cada combinação
+ até que se encontre o menor valor para a maior distância percorrida.
+ Tomando como exemplo a seguinte entrada, sendo N = 3 e K = 2:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/manoel/Documents/AEDS-III/TPs/TP2/assets/entrada_simples.png
+	scale 60
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Exemplo de instância
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+temos como resultado as seguintes combinações:
+\end_layout
+
+\begin_layout Standard
+\align center
+\begin_inset Tabular
+<lyxtabular version="3" rows="4" columns="2">
+<features tabularvalignment="middle">
+<column alignment="center" valignment="top" width="0">
+<column alignment="center" valignment="top" width="0">
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Planetas a visitar
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+Distância Máxima percorrida
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1, 2
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+4
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+1, 3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+5
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+2, 3
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Plain Layout
+3
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Depois de analisada cada combinação e calculada a distância máxima percorrida,
+ é feito uma busca pela menor distância dentre as distâncias encontradas.
+ No caso em questão, a solução ótima consiste em visitar os planetas 2 e
+ 3, sendo a maior distância igual a 3.
+\end_layout
+
+\begin_layout Standard
+Este é um algorítmo que não se mostra muito eficiente para grandes instâncias,
+ uma vez que o número de combinações pode ser muito grande.
+ Dado o conjunto de N planetas sendo K o número de visitados, o total de
+ combinações é dado por 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+C=\frac{N!}{K!(N-K)!}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A seguir está descrito o pseudo-código para a solução implementada:
 \end_layout
 
 \begin_layout Subsection

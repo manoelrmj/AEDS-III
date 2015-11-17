@@ -23,16 +23,16 @@ void greedy(int numPlanetas, int numConquista, int *distancia){
                 tmpPlaneta = j;
             }
         }
-        printf("(dist: %d, plt: %d)\n", tmpDistancia, tmpPlaneta);
+        //printf("(dist: %d, plt: %d)\n", tmpDistancia, tmpPlaneta);
         distanciaAux[tmpPlaneta] = tmpDistancia;
         for(j=tmpPlaneta+1; j<numArestas; j++){
             distanciaAux[j] = distanciaAux[j+1];
         }
         numArestas--;
-        for(j=0; j<numArestas; j++){
+        /*for(j=0; j<numArestas; j++){
             printf("%d ", distanciaAux[j]);
         }
-        printf("\n");
+        printf("\n");*/
     }
     tmpDistancia = 0;
     for(j=0; j<numArestas; j++){
