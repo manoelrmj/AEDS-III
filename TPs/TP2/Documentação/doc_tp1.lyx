@@ -1,0 +1,399 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language brazilian
+\language_package none
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2.5cm
+\topmargin 3cm
+\rightmargin 2.5cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Trabalho Prático 2: The Force Awakens
+\end_layout
+
+\begin_layout Author
+Manoel da Rocha Miranda Júnior {manoelrmj@dcc.ufmg.br}
+\end_layout
+
+\begin_layout Section
+Introdução
+\end_layout
+
+\begin_layout Standard
+Este trabalho prático tem como objetivo solucionar um problema de otimização
+ que consiste em minimizar a maior sub-distância percorrida por uma nave
+ ao percorrer um trecho onde existem paradas.
+ A nave em questão sai de um ponto de partida e percorre uma rota composta
+ por planetas até alcançar um ponto de chegada.
+ Os pontos de início e fim não são considerados planetas e a rota consiste
+ em uma linha reta.
+ A nave faz paradas nos planetas presentes na rota para fins de reparo e,
+ como ela se encontra em fase de teste de suas operações, idealmente ela
+ deve percorrer a menor distância possível até que seja feita outra parada
+ para reparos.
+ Desta forma, a solução do problema se resume em encontrar o menor valor
+ da maior distância que pode ser percorrida pela nave sendo que, de um conjunto
+ de N planetas, deseja-se reconquistar (e portanto, realizar paradas) em
+ K elementos deste conjunto.
+\end_layout
+
+\begin_layout Standard
+Neste trabalho prático, a solução para este problema é implementada a partir
+ de três paradigmas diferentes, sendo eles:
+\end_layout
+
+\begin_layout Itemize
+Programação Dinâmica
+\end_layout
+
+\begin_layout Itemize
+Algorítmo Guloso
+\end_layout
+
+\begin_layout Itemize
+Força Bruta
+\end_layout
+
+\begin_layout Section
+Solução
+\end_layout
+
+\begin_layout Standard
+O problema foi modelado em um simples arranjo contendo as distâncias.
+ Para cada algorítmo criado a partir de um dado paradigma, foi tido como
+ entrada o arranjo de distâncias, o número de planetas na rota e o número
+ de planetas que devem ser reconquistados.
+ A seguir estão descritas as soluções implementadas bem como uma imagem
+ ilustrando a representação do problema.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/manoel/Documents/AEDS-III/TPs/TP2/assets/Screenshot from 2015-11-16 22:44:54.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Representação de uma instância do problema.
+ Neste caso, onde de 4 planetas conquistam-se 3, a solução ótima tem como
+ maior distância 8, ao não visitar o planeta 2.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Algorítmo Guloso
+\end_layout
+
+\begin_layout Standard
+Na estratégia gulosa, o algorítmo se baseia no número de planetas que não
+ serão visitados e, portanto, que podem ser 
+\begin_inset Quotes eld
+\end_inset
+
+removidos
+\begin_inset Quotes erd
+\end_inset
+
+ da rota de forma a unificar as arestas correspondentes à estes planetas.
+ Primeiramente é criado uma cópia do vetor de distâncias objetivando sua
+ manipulação sem alterar a entrada previamente lida.
+ Em um loop que é executado N-K vezes, o arranjo de distâncias é percorrido
+ e cada distância lida é somada com a distância subsequente de forma a obter
+ a distância que seria percorrida ao eliminar um planeta.
+ Das distâncias calculadas é obtida a menor e o planeta correspondente é
+ desconsiderado por meio de um deslocamento do vetor.
+ Ao final das N-K iterações, N-K planetas terão sidos desconsiderados e,
+ no arranjo remanescente desta operação, estarão contidas as distâncias
+ correspondentes à soma das arestas unificadas na remoção de cada planeta.
+ Desta forma, a cada iteração o algorítmo busca eliminar o melhor planeta
+ até o momento (neste caso, aquele cuja eleminação criará uma aresta com
+ a menor distância).
+ A seguir um pseudo-código que representa sua execução:
+\begin_inset Float algorithm
+placement H
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+// Encontra o melhor planeta a ser eliminado até o momento
+\end_layout
+
+\begin_layout Plain Layout
+
+for(i=0 até N-K){
+\end_layout
+
+\begin_layout Plain Layout
+
+	for(j=0 até numArestas-1){
+\end_layout
+
+\begin_layout Plain Layout
+
+		if(distancia[j] + distancia[j+1] < tmpDistancia){
+\end_layout
+
+\begin_layout Plain Layout
+
+			tmpDistancia = distancia[j] + distancia[j+1];
+\end_layout
+
+\begin_layout Plain Layout
+
+			tmpPlaneta = j;
+\end_layout
+
+\begin_layout Plain Layout
+
+		}
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+	// Desloca o vetor para o planeta eliminado
+\end_layout
+
+\begin_layout Plain Layout
+
+	for(j=tmpPlaneta+1 até numArestas)
+\end_layout
+
+\begin_layout Plain Layout
+
+		distancia[j] = distancia[j+1];
+\end_layout
+
+\begin_layout Plain Layout
+
+	numArestas--;
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+// Dentre as distâncias calculadas, encontra a maior
+\end_layout
+
+\begin_layout Plain Layout
+
+for(j=0 até numArestas){
+\end_layout
+
+\begin_layout Plain Layout
+
+	if(distancia[j] > maiorDistancia)
+\end_layout
+
+\begin_layout Plain Layout
+
+		maiorDistancia = distancia[j];
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+Retorna maiorDistancia;
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Pseudo-código para a estratégia gulosa
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Na solução proposta, o algorítmo guloso nem sempre fornece a resposta correta.
+ Tomemos como exemplo o caso em que existem 9 planetas dos quais 2 serão
+ conquistados sendo a distâncias 11 / 1 / 1 / 1 / 1 / 1 / 1 / 1 / 1 / 1
+ / 11.
+ Na solução gulosa proposta haverá seleção 
+\end_layout
+
+\begin_layout Subsection
+Força Bruta
+\end_layout
+
+\begin_layout Subsection
+Programação Dinâmica
+\end_layout
+
+\begin_layout Section
+Análise de custo
+\end_layout
+
+\begin_layout Subsection
+Análise Teórica do Custo Assintótico de Tempo
+\end_layout
+
+\begin_layout Subsubsection
+Algorítmo Guloso
+\end_layout
+
+\begin_layout Subsubsection
+Força Bruta
+\end_layout
+
+\begin_layout Subsubsection
+Programação Dinâmica
+\end_layout
+
+\begin_layout Subsection
+Análise Teórica do Custo Assintótico de Espaço
+\end_layout
+
+\begin_layout Subsubsection
+Algorítmo Guloso
+\end_layout
+
+\begin_layout Subsubsection
+Força Bruta
+\end_layout
+
+\begin_layout Subsubsection
+Programação Dinâmica
+\end_layout
+
+\begin_layout Section
+Análise experimental
+\end_layout
+
+\begin_layout Subsection
+Algorítmo Guloso
+\end_layout
+
+\begin_layout Subsection
+Força Bruta
+\end_layout
+
+\begin_layout Subsection
+Programação Dinâmica
+\end_layout
+
+\begin_layout Section
+Conclusão
+\end_layout
+
+\end_body
+\end_document

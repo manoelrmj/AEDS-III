@@ -13,9 +13,6 @@ int getDistancia(int* planetasAVisitar, int n, int* distancia){
 				distanciaAux[j] += distanciaAux[i+1];
 				i++;
 			}
-			/*for(j=i; j<distSize; j++){
-				distanciaAux[j] = distanciaAux[j+1];
-			}*/
 		}
 	}
 	/* Encontra a maior distância percorrida depois de unidas as arestas
@@ -36,13 +33,14 @@ int getDistancia(int* planetasAVisitar, int n, int* distancia){
 		printf("%d ", distanciaAux[i]);
 	}
 	printf("\n\n");*/
+	free(distanciaAux);
 	return maiorDistancia;
 }
 
-void fooR(int* src, int* v, int srcIndex, int vIndex, int srcSize, int vSize, int* dist, int* maiorDistancia){
+void comb(int* src, int* v, int srcIndex, int vIndex, int srcSize, int vSize, int* dist, int* maiorDistancia){
 	int i;
 	if(vIndex==vSize){
-		int* planetasAVisitar = calloc(srcSize, sizeof(int));
+		int* planetasAVisitar = calloc(srcSize+1, sizeof(int));
 		int auxDist;
 		for(i=0; i<vSize; i++){
 			//printf("%d ", v[i]);
@@ -51,6 +49,7 @@ void fooR(int* src, int* v, int srcIndex, int vIndex, int srcSize, int vSize, in
 		auxDist = getDistancia(planetasAVisitar, srcSize, dist);
 		if(auxDist < *maiorDistancia)
 			*maiorDistancia = auxDist;
+		free(planetasAVisitar);
 		/*printf("\nVisit? : ");
 		for(i=0; i<srcSize; i++){
 			printf("%d ", planetasAVisitar[i]);
@@ -60,25 +59,26 @@ void fooR(int* src, int* v, int srcIndex, int vIndex, int srcSize, int vSize, in
 	else{
 		for(i=srcIndex; i<srcSize; i++){
 			v[vIndex] = src[i];
-			fooR(src, v, i+1, vIndex+1, srcSize, vSize, dist, maiorDistancia);
+			comb(src, v, i+1, vIndex+1, srcSize, vSize, dist, maiorDistancia);
 		}
 	}
 }
 
-void foo(int* src, int size, int k, int* dist, int* maiorDistancia){
-	int *v;
-	v = (int*)calloc(k, sizeof(int));
-	fooR(src, v, 0, 0, size, k, dist, maiorDistancia);
-}
-
 void bruteForce(int numPlanetas, int numConquista, int *distancia){
 	int i;
+	// Variável que armazenará a menor distância máxima
 	int maiorDistancia = INT_MAX;
+	// Vetor que indica se o planeta será visitado ou não
 	int* p = (int*)malloc(numPlanetas*sizeof(int));
+	// Vetor utilizado na combinação
+	int* v = (int*)calloc(numConquista, sizeof(int));
+
 	for(i=0; i<numPlanetas; i++)
-		p[i] = i+1;
-	foo(p, numPlanetas, numConquista, distancia, &maiorDistancia);	
+		p[i] = i+1;	
+	comb(p, v, 0, 0, numPlanetas, numConquista, distancia, &maiorDistancia);
 	printf("%d\n", maiorDistancia);
+	free(p);
+	free(v);
 
 }
 
