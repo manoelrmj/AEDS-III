@@ -129,7 +129,7 @@ O problema foi modelado em um simples arranjo contendo as distâncias.
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -198,7 +198,7 @@ removidos
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset listings
@@ -341,7 +341,7 @@ Na solução proposta, o algorítmo guloso nem sempre fornece a resposta correta
 placement H
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \align center
@@ -562,8 +562,42 @@ C=\frac{N!}{K!(N-K)!}
 A seguir está descrito o pseudo-código para a solução implementada:
 \end_layout
 
-\begin_layout Subsection
-Programação Dinâmica
+\begin_layout Standard
+\begin_inset Float algorithm
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Pseudo-código da força bruta
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
@@ -582,10 +616,6 @@ Algorítmo Guloso
 Força Bruta
 \end_layout
 
-\begin_layout Subsubsection
-Programação Dinâmica
-\end_layout
-
 \begin_layout Subsection
 Análise Teórica do Custo Assintótico de Espaço
 \end_layout
@@ -594,32 +624,204 @@ Análise Teórica do Custo Assintótico de Espaço
 Algorítmo Guloso
 \end_layout
 
+\begin_layout Standard
+O algorítmo guloso necessita de uma cópia do arranjo de distâncias para
+ que sejam feitos os cálculos das distâncias a serem percorridas ao eliminar
+ os N - K planetas e armazenar o resultado neste vetor.
+ Tendo em vista que o arranjo de distâncias é duplicado, temos um consumo
+ de memória equivalente à 
+\begin_inset Formula $O(n+n)$
+\end_inset
+
+.
+ Portanto, a complexidade espacial deste algorítmo é 
+\begin_inset Formula $O(N)$
+\end_inset
+
+, sendo N a quantidade de planetas da entrada.
+\end_layout
+
 \begin_layout Subsubsection
 Força Bruta
 \end_layout
 
-\begin_layout Subsubsection
-Programação Dinâmica
+\begin_layout Standard
+O algorítmo implementado por força bruta se baseia em um arranjo de tamanho
+ N e um de tamanho K para gerar as combinações.
+ Para cada combinação gerada é criado um vetor que realiza a marcação de
+ quais planetas serão visitados.
+ Tendo como base este vetor, é feita sobre uma cópia da entrada a unificação
+ das arestas correspondentes ao planetas que não serão visitados de forma
+ a obter a maior distância que será percorrida para a combinação em questão.
+ Logo, o consumo de memória cresce linearmente com o tamanho da entrada.
+ Portanto, assintoticamente, a complexidade espacial da estratégia de força
+ bruta é 
+\begin_inset Formula $O(N)$
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
 Análise experimental
 \end_layout
 
+\begin_layout Standard
+A análise experimental para cada implementação foi feita variando-se a quantidad
+e de planetas na rota (N) e a quantidade de planetas visitados (K).
+ O tempo gasto pelo algorítmo foi medido pelo comando time do Linux.
+ Esta ferramenta retorna o tempo gasto na execução de um comando.
+ O experimento foi feito em uma máquina com processador Intel Core i3 2.3
+ GHz e 4 GB de memória RAM.
+ Os resultados obtidos para cada implementação estão dispostos a seguir:
+\end_layout
+
 \begin_layout Subsection
 Algorítmo Guloso
+\end_layout
+
+\begin_layout Standard
+Para avaliar a estratégia gulosa, primeiramente foi variado o número de
+ planetas entre 1000 e 15000 e o número de planetas conquistados foi mantido
+ em 0 para que fosse possível observar o comportamento quadrático da solução,
+ uma vez que são feitas N-K iterações de forma a selecionar os planetas
+ a serem desconsiderados com base em suas distâncias.
+ O resultado pode ser observado no gráfico abaixo à esquerda.
+\end_layout
+
+\begin_layout Standard
+Ao variar a quantidade de planetas visitados (K), pode-se notar que o algorítmo
+ roda de forma mais eficiente, uma vez que, a medida de o valor de K aumenta,
+ são necessárias menos iterações para buscar quais planetas serão ignorados.
+ Nesta análise o valor de planetas foi mantido em 15000 e a quantidade de
+ planetas conquistados é variada de 1000 à 15000.
+ O resultado pode ser verificado o gráfico abaixo, à direita.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/manoel/Documents/AEDS-III/TPs/TP2/assets/planetas_AG.png
+	scale 50
+
+\end_inset
+
+
+\begin_inset Graphics
+	filename /home/manoel/Documents/AEDS-III/TPs/TP2/assets/planetas_conqAG.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Variação do tempo de execução do algorítmo baseado em estratégia gulosa.
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Subsection
 Força Bruta
 \end_layout
 
-\begin_layout Subsection
-Programação Dinâmica
+\begin_layout Standard
+Na análise experimental do algorítmo baseado em força bruta, a quantidade
+ de instâncias foi menor em função da complexidade fatorial da solução.
+ Para avaliar o tempo de execução, a quantidade de planetas foi variada
+ de 10 à 100, variando de 10 em 10.
+ Para estes casos, a quantidade de planetas a ser visitado foi mantida em
+ 5.
+ O resultado está descrito no gráfico abaixo, à esquerda.
+ 
+\end_layout
+
+\begin_layout Standard
+Para estudar o impacto do valor de planetas visitados, foram criadas entradas
+ com valor de N igual a 40 e o valor de K foi variado de 2 até
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/manoel/Documents/AEDS-III/TPs/TP2/assets/planetas_FB.png
+	scale 50
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Variação do tempo de execução do algorítmo baseado em força bruta
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
 \end_layout
 
 \begin_layout Section
 Conclusão
+\end_layout
+
+\begin_layout Standard
+Por meio deste trabalho prático foi possível observar experimentalmente
+ como se comportam algorítmos implementados a partir de diferentes paradigmas
+ de programação, tanto com relação à otimalidade da solução apresentada
+ bem como sob a perspectiva da viabilidade de cada algorítmo para entradas
+ diferentes.
+ Foi possível notar que algorítmos gulosos, apesar de terem fácil implementação
+ e serem relativamente eficientes, nem sempre chegam à solução ótima em
+ função de características particulares das instâncias a serem resolvidas.
+ Os algorítmos de força bruta, por sua vez, apesar de terem a garantia da
+ otimalidade na solução apresentada, podem se tornar inviáveis para instâncias
+ maiores, já que a natureza de implementações deste tipo consiste em buscar
+ em todo espaço de solução a solução ótima.
+ Em problemas combinatórios, como o caso deste trabalho prático, este tipo
+ de abordagem pode ser proibitivo para grandes instâncias, uma vez que a
+ complexidade assintótica pode chegar a ser de ordem fatorial.
+ 
 \end_layout
 
 \end_body
