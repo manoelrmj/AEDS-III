@@ -1,0 +1,214 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language brazilian
+\language_package none
+\inputencoding auto
+\fontencoding global
+\font_roman times
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 12
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 3cm
+\topmargin 3cm
+\rightmargin 3cm
+\bottommargin 3cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Trabalho Prático 3: Alimentação Saudável
+\end_layout
+
+\begin_layout Author
+Manoel da Rocha Miranda Júnior {manoelrmj@dcc.ufmg.br}
+\end_layout
+
+\begin_layout Section
+Introdução
+\end_layout
+
+\begin_layout Standard
+Este trabalho prático tem como objetivo desenvolver um programa que auxilie
+ o Departamento de Nutrição a criar planos alimentares para as pessoas participa
+ntes de um evento sobre alimentação saudável.
+ Para que se tenha uma vida saudável é necessário ingerir uma quantidade
+ de calorias diárias que variam de acordo com características de cada indivíduo.
+ Neste sentido, é necessário verificar se, dentre um conjunto de alimentos
+ com valores calóricos determinados, existe um subconjunto cuja soma é igual
+ à necessidade calórica de uma pessoa em questão.
+ Por exemplo, se uma pessoa tem a sua disposição os seguintes alimentos
+ com os respectivos valores calóricos: 30, 34, 40, 12, 50, 20, 45, 70, 63,
+ 41, 110, 17, 130, 23 e 50, e uma necessidade diária de consumo de 313 calorias,
+ é necessário verificar se existe uma combinação de alimentos cuja soma
+ de calorias corresponde à necessidade de consumo especificada.
+ No caso deste exemplo, a resposta é sim, uma vez que ao escolher os alimentos
+ de calorias 50, 110, 130 e 23 é possível chegar ao consumo determinado
+ de 313 calorias.
+\end_layout
+
+\begin_layout Standard
+A implementação da solução deste problema consiste em um algorítmo de força
+ bruta paralelizado, onde todas as combinações possíveis são testadas paralelame
+nte até que alguma delas encontre (caso exista) um subconjunto de alimentos
+ cuja soma seja igual a especificada, sendo que a resposta de cada instância
+ pode ser 'sim' ou 'nao'.
+ 
+\end_layout
+
+\begin_layout Section
+Solução
+\end_layout
+
+\begin_layout Standard
+Este problema, bastante conhecido na ciência da computação, é comumente
+ chamado de 
+\shape italic
+subset sum problem
+\shape default
+, ou 
+\shape italic
+problema da soma do subconjunto
+\shape default
+.
+ Uma possível implementação, e que foi utilizada na solução deste problema,
+ consiste em gerar todas as combinações possíveis de elementos do conjunto
+ por força bruta e somar os elementos da combinação gerada em busca da soma
+ desejada.
+ Na implementação deste tabalho essa abordagem foi utilizada juntamente
+ com uma técnica de parelelização através da biblioteca pthread, uma biblioteca
+ para a linguagem C que padroniza o uso de threads em sistemas UNIX.
+\end_layout
+
+\begin_layout Standard
+Inicialmente, para cada instância do problema, é feita uma divisão das combinaçõ
+es existentes entre as threads.
+ No caso desta implementação, o número máximo de threads utilizáveis corresponde
+ ao número de alimentos na entrada, já que esta é também a quantidade de
+ grupos formado por sub-grupos de mesmo tamanho que podem ser gerados.
+ O número de threads a serem criadas é passado pelo parâmetro -t na execução
+ do programa.
+ Cada thread recebe como parâmetro um intervalo de combinações a serem geradas
+ e analisadas bem como os elementos lidos, quantidade de elementos na entrada,
+ a soma desejada e um ponteiro pra uma variável que sinalizará se existe
+ ou não uma soma que satisfaça o valor desejado de calorias.
+ Depois de criado os argumentos das threads, as threads são criadas e cada
+ uma delas roda o algorítmo de combinação para a faixa de valores de combinação
+ que à ela foi atribuído.
+\end_layout
+
+\begin_layout Standard
+Dessa forma, a solução pode ser caracterizada de uma forma geral como sendo
+ um algorítmo de força bruta com paralelismo de dados.
+ A seguir, é apresentada uma imagem esquematizando como é feita a divisão
+ no processo de paralelismo de uma possível instância do problema.
+ No caso em questão, a entrada consiste de 4 alimentos e para exemplificar,
+ são utilizadas 4 threads:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/manoel/Documents/AEDS-III/TPs/TP3/assets/exemplo_thread.pdf
+	scale 52
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Exemplo de instância e divisão entre threads.
+ 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Análise de custo
+\end_layout
+
+\begin_layout Subsection
+Análise Teórica do Custo Assintótico de Tempo
+\end_layout
+
+\begin_layout Subsection
+Análise Teórica do Custo Assintótico de Espaço
+\end_layout
+
+\begin_layout Section
+Análise experimental
+\end_layout
+
+\begin_layout Section
+Conclusão
+\end_layout
+
+\end_body
+\end_document
