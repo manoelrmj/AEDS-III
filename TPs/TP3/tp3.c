@@ -47,16 +47,8 @@ int main(int argc, char **argv){
             calorias[qtdeAlimentos] = auxCaloria;
             qtdeAlimentos++;
         }
-        printf("Entrada: %d alimentos\n", qtdeAlimentos);
-        /*
-        for(k=0; k<qtdeAlimentos; k++)
-            printf("%d ", calorias[k]);
-        printf("\n");*/
-
-        /* COMB */
+        //printf("Entrada: %d alimentos\n", qtdeAlimentos);
         verificaSolucao(calorias, qtdeAlimentos, soma, qtdThreads);
-        //genComb(calorias, qtdeAlimentos, 2, soma);
-        /* COMB */
     }
 	return 0;
 }

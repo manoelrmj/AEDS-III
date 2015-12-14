@@ -5,14 +5,9 @@ void comb(int* conjunto, int* v, int srcIndex, int vIndex, int qtdeAlimentos, in
     int i, soma;
     if(vIndex==vSize){
         soma = 0;
-        /*for(i=0; i<vSize; i++)
-            printf("%d ", v[i]);*/
-        //printf("\n");
         for(i=0; i<vSize; i++)
             soma += v[i];
-        //printf(" Soma: %d\n", soma);
         if(soma == consumo){
-            //printf("SIM\n");
             (*flagEncontrado) = 1;
         }
     }
@@ -21,6 +16,8 @@ void comb(int* conjunto, int* v, int srcIndex, int vIndex, int qtdeAlimentos, in
             v[vIndex] = conjunto[i];
             if(!(*flagEncontrado))
                 comb(conjunto, v, i+1, vIndex+1, qtdeAlimentos, vSize, consumo, flagEncontrado);
+            else
+                return;
         }
     }
 }
@@ -28,13 +25,21 @@ void comb(int* conjunto, int* v, int srcIndex, int vIndex, int qtdeAlimentos, in
 void genComb(int* calorias, int qtdeAlimentos, int k, int consumo, int* flagEncontrado){
     int *escolhidos;
     escolhidos = (int*)calloc(k, sizeof(int));
+    //printf("Gerando combinação %d\n", k);
     comb(calorias, escolhidos, 0, 0, qtdeAlimentos, k, consumo, flagEncontrado);
+    //printf("Finalizou combinação %d\n", k);
     free(escolhidos);
 }
 
 void* executaThread(void* arg){
+    int i;
     threadArg* t_arg = (threadArg*) arg;
-    printf("Thread executou! %d - %d\n", t_arg->combInicial, t_arg->combFinal);
+    //printf("Thread executou! %d - %d\n", t_arg->combInicial, t_arg->combFinal);
+    if(t_arg->combInicial != 0 && t_arg->combFinal !=0){
+        for(i=t_arg->combInicial; i<=t_arg->combFinal; i++)
+            genComb(t_arg->calorias, t_arg->qtdeAlimentos, i, t_arg->soma, t_arg->solucaoEncontrada);
+    }    
+    return arg;
 }
 
 int verificaSolucao(int* calorias, int qtdeAlimentos, int soma, int qtdeThreads){
@@ -84,9 +89,8 @@ int verificaSolucao(int* calorias, int qtdeAlimentos, int soma, int qtdeThreads)
     
     /*for(i=0; i<qtdeThreads; i++){
         printf("Thread %d: %d - %d\n", i, t_arg[i].combInicial, t_arg[i].combFinal);
-    }*/
-
-    //exit(1);
+    }
+    exit(1);*/
     // Cria as threads
     pthread_t *threads = (pthread_t*) malloc(qtdeThreads*sizeof(pthread_t));
     for(i=0; i<qtdeThreads; i++){
