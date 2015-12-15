@@ -699,6 +699,121 @@ O tempo gasto pelo algoritmo foi medido pelo comando time do Linux.
  Os resultados obtidos para cada condição estão descritos a seguir:
 \end_layout
 
+\begin_layout Subsection
+Variação da quantidade de threads
+\end_layout
+
+\begin_layout Standard
+Para analisar o impacto da quantidade de threads, foi considerada uma entrada
+ com 10 instâncias do problema onde nenhuma delas possui um subconjunto
+ cuja soma é igual ao valor desejado de calorias.
+ A quantidade de alimentos foi mantida em 20 e o número de threads variado
+ entre 2 e 20.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/manoel/Documents/AEDS-III/TPs/TP3/assets/varia_thread.jpg
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Tempos de execução em função da quantidade de threads
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Pode-se perceber que o aumento no número de threads até certo ponto aumenta
+ o desempenho do programa.
+ Entretanto, devido à um maior desbalanceamento de carga, ocorre uma degradação
+ de desempenho considerável para valores próximos de 14 threads.
+ Desta forma fica evidente que a divisão das combinações entre as threads
+ é um fator decisivo para um bom ganho de desempenho.
+\end_layout
+
+\begin_layout Subsection
+Variação da quantidade de alimentos
+\end_layout
+
+\begin_layout Standard
+Para observar como o tamanho do problema interfere no tempo de execução,
+ foi feito um experimento variando o tamanho da entrada e mantendo o número
+ de threads.
+ O número de threads foi mantido no máximo possível, ou seja, igual ao número
+ de elementos da entrada.
+ Para avaliar o comportamento no pior caso, todas as instâncias do teste
+ foram criadas de forma a não existir um subconjunto cuja soma seja igual
+ a quantidade de calorias desejada.
+ Dessa forma, todas as possíveis combinações são geradas.
+ O resultado está descrito no gráfico a seguir:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename /home/manoel/Documents/AEDS-III/TPs/TP3/assets/varicao_alimentos.jpg
+	scale 70
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Variação do tempo em função da quantidade de alimentos 
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Pode ser verificado, conforme foi aferido na análise de complexidade temporal,
+ que o tempo necessário para resolver o problema cresce de forma exponencial
+ com o tamanho da entrada.
+\end_layout
+
 \begin_layout Section
 Conclusão
 \end_layout
@@ -708,8 +823,7 @@ A partir deste trabalho prático, pôde-se avaliar os reais ganhos de implementa
 es que levam em conta alguma estratégia de paralelismo.
  É possível notar que a paralelização da solução traz ganhos reais e muito
  significativos para instâncias particulares do problema, onde a divisão
- e o processamento paralelo da solução podem levar rapidamente à solução
- do problema.
+ e o processamento paralelo do problema podem levar rapidamente à sua solução.
  No caso deste trabalho, onde o paralelismo de dados foi explorado, foi
  possível perceber fontes de degradação de desempenho, como no caso do desbalanc
 eamento de carga inerente à forma como o problema é dividido entre as linhas

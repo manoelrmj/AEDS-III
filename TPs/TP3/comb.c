@@ -79,7 +79,7 @@ int verificaSolucao(int* calorias, int qtdeAlimentos, int soma, int qtdeThreads)
             break;
         else
             idComb+=carga;
-    }
+        }
     /* Aloca as combinações que sobraram para a última thread,
     depois de ignorar as threads qur ficaram sem tarefas */
     i = qtdeThreads-1;
