@@ -3,6 +3,9 @@
 \begin_document
 \begin_header
 \textclass article
+\begin_preamble
+\exhyphenpenalty=10000\hyphenpenalty=10000
+\end_preamble
 \use_default_options true
 \maintain_unincluded_children false
 \language brazilian
@@ -77,6 +80,7 @@ Introdução
 \end_layout
 
 \begin_layout Standard
+\align block
 Este trabalho prático tem como objetivo desenvolver um programa que auxilie
  o Departamento de Nutrição a criar planos alimentares para as pessoas participa
 ntes de um evento sobre alimentação saudável.
@@ -96,7 +100,7 @@ ntes de um evento sobre alimentação saudável.
 \end_layout
 
 \begin_layout Standard
-A implementação da solução deste problema consiste em um algorítmo de força
+A implementação da solução deste problema consiste em um algoritmo de força
  bruta paralelizado, onde todas as combinações possíveis são testadas paralelame
 nte até que alguma delas encontre (caso exista) um subconjunto de alimentos
  cuja soma seja igual a especificada, sendo que a resposta de cada instância
@@ -119,12 +123,12 @@ subset sum problem
 problema da soma do subconjunto
 \shape default
 .
- Uma possível implementação, e que foi utilizada na solução deste problema,
+ Uma possível implementação, e que foi utilizada na solução deste trabalho,
  consiste em gerar todas as combinações possíveis de elementos do conjunto
  por força bruta e somar os elementos da combinação gerada em busca da soma
  desejada.
- Na implementação deste tabalho essa abordagem foi utilizada juntamente
- com uma técnica de parelelização através da biblioteca pthread, uma biblioteca
+ Na implementação deste trabalho essa abordagem foi utilizada juntamente
+ com uma técnica de paralelização através da biblioteca pthread, uma biblioteca
  para a linguagem C que padroniza o uso de threads em sistemas UNIX.
 \end_layout
 
@@ -133,7 +137,7 @@ Inicialmente, para cada instância do problema, é feita uma divisão das combin
 es existentes entre as threads.
  No caso desta implementação, o número máximo de threads utilizáveis corresponde
  ao número de alimentos na entrada, já que esta é também a quantidade de
- grupos formado por sub-grupos de mesmo tamanho que podem ser gerados.
+ grupos formados por sub-grupos de mesmo tamanho que podem ser gerados.
  O número de threads a serem criadas é passado pelo parâmetro -t na execução
  do programa.
  Cada thread recebe como parâmetro um intervalo de combinações a serem geradas
@@ -141,13 +145,13 @@ es existentes entre as threads.
  a soma desejada e um ponteiro pra uma variável que sinalizará se existe
  ou não uma soma que satisfaça o valor desejado de calorias.
  Depois de criado os argumentos das threads, as threads são criadas e cada
- uma delas roda o algorítmo de combinação para a faixa de valores de combinação
+ uma delas roda o algoritmo de combinação para a faixa de valores de combinação
  que à ela foi atribuído.
 \end_layout
 
 \begin_layout Standard
 Dessa forma, a solução pode ser caracterizada de uma forma geral como sendo
- um algorítmo de força bruta com paralelismo de dados.
+ um algoritmo de força bruta com paralelismo de dados.
  A seguir, é apresentada uma imagem esquematizando como é feita a divisão
  no processo de paralelismo de uma possível instância do problema.
  No caso em questão, a entrada consiste de 4 alimentos e para exemplificar,
@@ -159,7 +163,7 @@ Dessa forma, a solução pode ser caracterizada de uma forma geral como sendo
 placement H
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
@@ -188,6 +192,182 @@ Exemplo de instância e divisão entre threads.
 \end_inset
 
 
+\end_layout
+
+\begin_layout Standard
+Esta implementação que explora o paralelismo de dados tem como potencial
+ fonte de degradação de desempenho o desbalanceamento de carga entre as
+ threads, uma vez que as linhas de execução que buscam a solução em combinações
+ cujo tamanho dos subconjuntos sejam relativamente pequenos ou grandes,
+ possuem um número de subconjuntos menor em relação às demais e portanto
+ um espaço de busca menor.
+\end_layout
+
+\begin_layout Standard
+Vale observar que o número de combinações possíveis ao escolher K elementos
+ de um conjunto composto por N elementos, é dado pela fórmula
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+C=\frac{N!}{K!(N-K)!}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+A seguir um pseudo código descrevendo sucintamente a solução:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float algorithm
+placement H
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset listings
+lstparams "basicstyle={\small},language=C,tabsize=4"
+inline false
+status open
+
+\begin_layout Plain Layout
+
+verificaSolucao(){
+\end_layout
+
+\begin_layout Plain Layout
+
+	/* Cria as threads com os parâmetros definidos.
+ No argumento
+\end_layout
+
+\begin_layout Plain Layout
+
+	de cada thread constará o intervalo de combinações a serem 
+\end_layout
+
+\begin_layout Plain Layout
+
+	geradas e avaliadas.*/
+\end_layout
+
+\begin_layout Plain Layout
+
+	for(i=0 ate qtdeThreads)
+\end_layout
+
+\begin_layout Plain Layout
+
+		pthread_create(thread[i], metodoThread, argumento[i]);
+\end_layout
+
+\begin_layout Plain Layout
+
+	
+\end_layout
+
+\begin_layout Plain Layout
+
+	for(i=0 ate qtdeThreads)
+\end_layout
+
+\begin_layout Plain Layout
+
+		pthread_join(thread[i]); 
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+
+metodoThread(){	
+\end_layout
+
+\begin_layout Plain Layout
+
+	// Verifica se a thread possui combinação para computar
+\end_layout
+
+\begin_layout Plain Layout
+
+	if(combinacaoInicial != 0 && combinacaoFinal != 0){
+\end_layout
+
+\begin_layout Plain Layout
+
+		for(i= combinacaoIncial até combinacaoFinal)
+\end_layout
+
+\begin_layout Plain Layout
+
+			/* Executa a combinação escolhendo i 
+\end_layout
+
+\begin_layout Plain Layout
+
+			elementos dentro do conjunto de alimentos */
+\end_layout
+
+\begin_layout Plain Layout
+
+			combinacao(i);
+\end_layout
+
+\begin_layout Plain Layout
+
+	}
+\end_layout
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Pseudo código da solução
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Classificação do problema
+\end_layout
+
+\begin_layout Standard
+O problema abordado neste trabalho pode ser classificado quanto a sua dificuldad
+e em termos computacionais de resolvê-lo.
+ Esta seção é destinada a avaliar o problema quanto à sua classificação
+ e determinar a qual classe de complexidade ele pertence.
+ 
 \end_layout
 
 \begin_layout Section
